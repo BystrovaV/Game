@@ -55,6 +55,7 @@ namespace игра
         protected int Max_hp;
         protected int age;
         protected int xp; 
+        protected Status_all status;
         //set'ы для них
  
         public int ID
@@ -109,7 +110,7 @@ namespace игра
         }
         public string Name
         {
-            get { return Name; } 
+            get ; 
         }
         //public string Status
         //{
@@ -125,7 +126,7 @@ namespace игра
         //}
         public Status_all Status
         {
-            get { return Status; } set { Status = value; if (Status == Status_all.Dead || Status == Status_all.Paralyzed) {Move_ability = Talk_ability = false; } }
+            get { return status; } set { status = value; if (Status == Status_all.Dead || Status == Status_all.Paralyzed) {Move_ability = Talk_ability = false; } }
         }
         public Race_all Race
         {
@@ -222,6 +223,13 @@ namespace игра
                 $"Максимальное здоровье: {Max_HP}\nОпыт: {XP}";
         }
        // туса с артефактами
+        static void Main(string[] args)
+        {
+            var abc = new MagicCharacter("Xa", Race_all.Elf, Gender_all.Female, 15);
+            abc.XP = 150;
+            Console.WriteLine(abc.ToString());
+            Console.ReadKey();
+        }
     }
 
 }

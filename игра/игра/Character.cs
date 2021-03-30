@@ -109,10 +109,7 @@ namespace игра
         }
         public string Name
         {
-            get { return Name; } private set {
-                if (String.IsNullOrEmpty(value) || value.Length < 1) throw new System.ArgumentException ("Wtf the Name");
-                Name = value;
-            }
+            get { return Name; } 
         }
         //public string Status
         //{
@@ -132,11 +129,11 @@ namespace игра
         }
         public Race_all Race
         {
-            get; private set;
+            get; 
         }
         public Gender_all Gender
         {
-            get; private set;
+            get;
         }
 
         public bool Talk_ability
@@ -168,7 +165,8 @@ namespace игра
             // Заменить(?) идентификатор
             ID = ID_next;
             ID_next += 1;
-            Name = _name;
+            if (String.IsNullOrEmpty(value) || value.Length < 1) throw new System.ArgumentException ("Wtf the Name");
+            else Name = _name;
             Status = Status_all.Healthy;
             Talk_ability = true;
             Move_ability = true;

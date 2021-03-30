@@ -77,10 +77,9 @@ namespace игра
             get { return hp; }
             set
             {
-                if (value < 0)
-                    throw new System.ArgumentException
-                        ("HP < 0");
-                hp = value;
+                if (value < 0) hp = 0;
+                if (value > Max_hp) hp = Max_HP;
+                else hp = value;
                 CheckHP();
             }
         }

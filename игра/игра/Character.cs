@@ -166,7 +166,7 @@ namespace игра
             // Заменить(?) идентификатор
             ID = ID_next;
             ID_next += 1;
-            if (String.IsNullOrEmpty(value) || value.Length < 1) throw new System.ArgumentException ("Wtf the Name");
+            if (String.IsNullOrEmpty(_name) || _name.Length < 1) throw new System.ArgumentException ("Wtf the Name");
             else Name = _name;
             Status = Status_all.Healthy;
             Talk_ability = true;

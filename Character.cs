@@ -47,6 +47,7 @@ namespace игра
         protected int xp; 
         protected Status_all status;
         protected Dictionary<Artifact, int> inventory = new Dictionary<Artifact, int>();
+	public bool isArmor = false;
         //set'ы для них
 
         public int ID

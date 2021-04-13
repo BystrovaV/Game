@@ -68,11 +68,13 @@ namespace игра
         {
             CheckSpell(spell);
             spell.Perform_a_magic_effect(character);
+            this.mp -= spell.lost_mana;
         }
         public void UseSpell(Spell spell, Character character, int power)
         {
             CheckSpell(spell);
             spell.Perform_a_magic_effect(character, power);
+            this.mp -= spell.lost_mana;
         }
     }
 }

@@ -25,7 +25,8 @@ namespace игра.artifacts
             if (!CanUse) throw new GameException("Can't use the artifact anymore");
             if (character == null) throw new ArgumentNullException("Character is null");
             Power -= power;
-            character.HP -= power;
+            if(!character.isArmor)
+                character.HP -= power;
             CanUse = Power > 0;
         }
         public override void Perform_a_magic_effect(Character character)

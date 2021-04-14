@@ -146,7 +146,7 @@ namespace RPG
             if (!CanUse) throw new GameException("Can't use the artifact anymore");
             if (character == null) throw new ArgumentNullException("Character is null");
             Power -= power;
-            if(!character.isArmor)
+            if(!character.isArmor )
                 character.HP -= power;
             CanUse = Power > 0;
         }

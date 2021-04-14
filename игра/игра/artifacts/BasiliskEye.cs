@@ -14,7 +14,7 @@ namespace игра.artifacts
         {
             if (!CanUse) throw new GameException("Can't use the artifact anymore");
             if (character == null) throw new ArgumentNullException("Character is null");
-            if (character.Status != Status_all.Dead ) {
+            if (character.Status != Status_all.Dead & !character.isArmor) {
                 character.Status = Status_all.Paralyzed;
                 character.Move_ability = false;
                 character.Talk_ability = false;

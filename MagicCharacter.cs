@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-//Подключить namespace класса
-using RPG;
 
-namespace игра
+namespace RPG
 {
 
     class MagicCharacter : Character
@@ -67,14 +65,27 @@ namespace игра
         public void UseSpell(Spell spell, Character character)
         {
             CheckSpell(spell);
+            if (this.MP < spell.min_mana)
+                throw new GameException("Недостаточно маны для выполнения заклинания!");
             spell.Perform_a_magic_effect(character);
-            this.mp -= spell.lost_mana;
+            this.MP -= spell.lost_mana;
         }
         public void UseSpell(Spell spell, Character character, int power)
         {
             CheckSpell(spell);
+            if (this.mp < spell.min_mana | !CanUseSpell(spell, power))
+                throw new GameException("Недостаточно маны для выполнения заклинания!");
             spell.Perform_a_magic_effect(character, power);
-            this.mp -= spell.lost_mana;
+            this.MP -= spell.lost_mana;
+        }
+
+        protected bool CanUseSpell(Spell spell, int power)
+        {
+            if ((spell is Armor) & (power * 50) > this.MP)
+                return false;
+            if ((spell is Add_HP) & (power * 2) > this.MP)
+                return false;
+            return true;
         }
     }
 }

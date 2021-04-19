@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-//Подключить namespace класса
-using игра.artifacts;
 
-//Заменить namespace
-namespace игра
+namespace RPG
 {
     public enum Status_all
     {
@@ -46,10 +43,9 @@ namespace игра
         protected int age;
         protected int xp; 
         protected Status_all status;
+        public bool isArmor = false;
         protected Dictionary<Artifact, int> inventory = new Dictionary<Artifact, int>();
-	public bool isArmor = false;
-        //set'ы для них
-
+       
         public int ID
         {
             get; 
@@ -70,8 +66,10 @@ namespace игра
             get { return hp; }
             set
             {
-                if (value < 0) hp = 0;
-                if (value > Max_hp) hp = Max_HP;
+                if (value < 0)
+                    hp = 0;
+                else if (value > Max_hp)
+                    hp = Max_HP;
                 else hp = value;
                 CheckHP();
             }
@@ -84,8 +82,7 @@ namespace игра
                 if (value < 0)
                     throw new System.ArgumentException
                         ("Max hp < 0");
-                Max_hp = value
-                ;
+                Max_hp = value;
             }
         } 
         public int XP
@@ -153,13 +150,17 @@ namespace игра
         }
         public virtual void CheckHP()
         {
-            decimal HP_percent = 100 / (Max_HP / HP);
-            if (HP_percent < 10 && Status == Status_all.Healthy)
-                Status = Status_all.Weak;
-            if (HP_percent > 10 && Status == Status_all.Weak)
-                Status = Status_all.Healthy;
-            if (HP_percent == 0)
+            if (HP == 0)
                 Status = Status_all.Dead;
+            else
+            {
+                decimal HP_percent = 100 / (Max_HP / HP);
+                if (HP_percent < 10 && Status == Status_all.Healthy)
+                    Status = Status_all.Weak;
+                if (HP_percent > 10 && Status == Status_all.Weak)
+                    Status = Status_all.Healthy;
+            }
+               
         }
         public override string ToString()
         {
@@ -206,6 +207,14 @@ namespace игра
             artifact.Perform_a_magic_effect(character);
             if (!artifact.CanUse)
                 ThrowArtifact(artifact);
+            if (character.Status == Status_all.Dead)
+            {
+                this.XP += 100;
+                foreach(var e in character.inventory.Keys)
+                {
+                    inventory.Remove(e);
+                }
+            }
         }
         public void UseArtifact(Artifact artifact, Character character, int power)
         {
@@ -213,14 +222,12 @@ namespace игра
             artifact.Perform_a_magic_effect(character, power);
             if (!artifact.CanUse)
                 ThrowArtifact(artifact);
+            if (character.Status == Status_all.Dead)
+            {
+                this.XP += 100;
+            }
         }
-        static void Main(string[] args)
-        {
-            var abc = new MagicCharacter("Xa", Race_all.Elf, Gender_all.Female, 15);
-            abc.XP = 150;
-            Console.WriteLine(abc.ToString());
-            Console.ReadKey();
-        }
+       
     }
 
 }

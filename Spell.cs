@@ -9,8 +9,8 @@ namespace RPG
 {
     abstract class Spell : IMagic
     {
-        protected int min_mana;
-        public int lost_mana{get; protected set;}//потраченная мана, для испольщования в другом классе, возможно уберем
+        public int min_mana { get; protected set; }
+        public int lost_mana{get; protected set;}
         public bool verbal_comp { get; protected set; }
         public bool motor_comp { get; protected set; }
         
@@ -37,7 +37,9 @@ namespace RPG
 
             if (character.Status == Status_all.Ill)
             {
-                double HP_percent = 100 / (character.Max_HP / character.HP);
+                character.Status = Status_all.Healthy;
+                character.CheckHP();
+                /*double HP_percent = 100 / (character.Max_HP / character.HP);
                 if (HP_percent < 10)
                 {
                     character.Status = Status_all.Weak;
@@ -45,10 +47,9 @@ namespace RPG
                 if (HP_percent > 10)
                 {
                     character.Status = Status_all.Healthy;
-                }
+                }*/
             }
             lost_mana = 20;
-            //-20 mana
         }
     }
     //2. Противоядие
@@ -64,15 +65,7 @@ namespace RPG
         {
             if (character.Status == Status_all.Poisoned)
             {
-                double HP_percent = 100 / (character.Max_HP / character.HP);
-                if (HP_percent < 10)
-                {
-                    character.Status = Status_all.Weak;
-                }
-                if (HP_percent > 10)
-                {
-                    character.Status = Status_all.Healthy;
-                }
+                character.CheckHP();
             }
             lost_mana = 30;
         }
@@ -99,7 +92,6 @@ namespace RPG
     //4. Броня
     class Armor : Spell
     {
-        //public bool isArmor { get; protected set; }
         public Armor()
         {
             min_mana = 50;
@@ -108,21 +100,12 @@ namespace RPG
         }
         public override void Perform_a_magic_effect(Character character, int power)// power как время
         {
-            // еще один способ, но не знаю, я оба не проверяла
-            /*DateTime t1 = DateTime.Now;
-            isArmor = true;
-            if ((DateTime.Now - t1).TotalSeconds <= 0)
-            {
-                isArmor = false;
-            }*/
+            
             TimerCallback tm = new TimerCallback(Count);
-            //нужно добавить в главный класс поле неуязвимости
             character.isArmor = true;
             Timer timer = new Timer(tm, character, 0, power*60000);
             lost_mana = power * 50;
             //за единицу времени 1 минута
-            //надо поставить во всех вредоносных штуках проверку при отнятии чего-то
-            //только при отнятии чего-то, заклинание будут произноситься, отнимать ману, но не действовать
         }
         public static void Count(object obj)
         {
@@ -164,7 +147,6 @@ namespace RPG
         {
             character.HP += power;
             lost_mana = power * 2;
-            //mana=2*power
         }
     }
 

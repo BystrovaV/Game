@@ -69,6 +69,13 @@ namespace RPG
                 throw new GameException("Недостаточно маны для выполнения заклинания!");
             spell.Perform_a_magic_effect(character);
             this.MP -= spell.lost_mana;
+            //if (character.Status == Status_all.Dead)
+            //{
+            //    this.XP += 100;
+            //}
+            //else
+            //    this.XP += 10;
+            AddXP(character);
         }
         public void UseSpell(Spell spell, Character character, int power)
         {
@@ -77,6 +84,13 @@ namespace RPG
                 throw new GameException("Недостаточно маны для выполнения заклинания!");
             spell.Perform_a_magic_effect(character, power);
             this.MP -= spell.lost_mana;
+            //if (character.Status == Status_all.Dead)
+            //{
+            //    this.XP += 100;
+            //}
+            //else
+            //    this.XP += 10;
+            AddXP(character);
         }
 
         protected bool CanUseSpell(Spell spell, int power)

@@ -207,14 +207,17 @@ namespace RPG
             artifact.Perform_a_magic_effect(character);
             if (!artifact.CanUse)
                 ThrowArtifact(artifact);
-            if (character.Status == Status_all.Dead)
-            {
-                this.XP += 100;
-                foreach(var e in character.inventory.Keys)
-                {
-                    inventory.Remove(e);
-                }
-            }
+            //if (character.Status == Status_all.Dead)
+            //{
+            //    this.XP += 100;
+            //    foreach (var e in character.inventory.Keys)
+            //    {
+            //        inventory.Remove(e);
+            //    }
+            //}
+            //else
+            //    this.XP += 10;
+            AddXP(character);
         }
         public void UseArtifact(Artifact artifact, Character character, int power)
         {
@@ -222,10 +225,27 @@ namespace RPG
             artifact.Perform_a_magic_effect(character, power);
             if (!artifact.CanUse)
                 ThrowArtifact(artifact);
+            //if (character.Status == Status_all.Dead)
+            //{
+            //    this.XP += 100;
+            //}
+            //else
+            //    this.XP += 10;
+            AddXP(character);
+        }
+
+        protected void AddXP(Character character)
+        {
             if (character.Status == Status_all.Dead)
             {
                 this.XP += 100;
+                foreach (var e in character.inventory.Keys)
+                {
+                    inventory.Remove(e);
+                }
             }
+            else
+                this.XP += 10;
         }
        
     }

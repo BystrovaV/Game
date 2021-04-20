@@ -77,9 +77,9 @@ namespace RPG
             if (character == null) throw new ArgumentNullException("Character is null");
             if (character.Status == Status_all.Poisoned)
             {
-               // character.Status = Status_all.Healthy;
+                character.Status = Status_all.Healthy;
                 character.HP = character.HP;
-                character.CheckHP();
+                //character.CheckHP();
                 CanUse = false;
             }
         }

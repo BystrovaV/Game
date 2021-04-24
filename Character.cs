@@ -16,7 +16,7 @@ namespace RPG
         Dead
     }
 
-    public  enum Race_all
+    public enum Race_all
     {
         Human,
         Gnome,
@@ -34,24 +34,24 @@ namespace RPG
     {
         int CompareTo(Object obj);
     }
-    public class Character: IComparable
+    public class Character : IComparable
     {
-        private static int ID_next= 0;
+        private static int ID_next = 0;
 
         protected int hp;
         protected int Max_hp;
         protected int age;
-        protected int xp; 
+        protected int xp;
         protected Status_all status;
         public bool isArmor = false;
         protected Dictionary<Artifact, int> inventory = new Dictionary<Artifact, int>();
-       
+
         public int ID
         {
-            get; 
+            get;
         }
         public int Age
-        { 
+        {
             get { return age; }
             set
             {
@@ -84,7 +84,7 @@ namespace RPG
                         ("Max hp < 0");
                 Max_hp = value;
             }
-        } 
+        }
         public int XP
         {
             get { return xp; }
@@ -99,15 +99,16 @@ namespace RPG
         }
         public string Name
         {
-            get ; 
+            get;
         }
         public Status_all Status
         {
-            get { return status; } set { status = value; if (Status == Status_all.Dead || Status == Status_all.Paralyzed) {Move_ability = Talk_ability = false; } }
+            get { return status; }
+            set { status = value; if (Status == Status_all.Dead || Status == Status_all.Paralyzed) { Move_ability = Talk_ability = false; } }
         }
         public Race_all Race
         {
-            get; 
+            get;
         }
         public Gender_all Gender
         {
@@ -127,7 +128,7 @@ namespace RPG
             // Заменить(?) идентификатор
             ID = ID_next;
             ID_next += 1;
-            if (String.IsNullOrEmpty(_name) || _name.Length < 1) throw new System.ArgumentException ("Wtf the Name");
+            if (String.IsNullOrEmpty(_name) || _name.Length < 1) throw new System.ArgumentException("Wtf the Name");
             else Name = _name;
             Status = Status_all.Healthy;
             Talk_ability = true;
@@ -141,7 +142,7 @@ namespace RPG
         }
         public int CompareTo(object obj)
         {
-            Character otherCharacter = (Character) obj;
+            Character otherCharacter = (Character)obj;
             if (XP < otherCharacter.XP)
                 return -1;
             if (XP > otherCharacter.XP)
@@ -160,7 +161,7 @@ namespace RPG
                 if (HP_percent > 10 && Status == Status_all.Weak)
                     Status = Status_all.Healthy;
             }
-               
+
         }
         public override string ToString()
         {
@@ -215,8 +216,6 @@ namespace RPG
             //        inventory.Remove(e);
             //    }
             //}
-            //else
-            //    this.XP += 10;
             AddXP(character);
         }
         public void UseArtifact(Artifact artifact, Character character, int power)
@@ -229,11 +228,55 @@ namespace RPG
             //{
             //    this.XP += 100;
             //}
-            //else
-            //    this.XP += 10;
             AddXP(character);
         }
-
+        public void OutInventory()
+        {
+            int count = 1;
+            string item = "Глаз василиска", info = "";
+            foreach (var i in inventory.Keys)
+            {
+                if (i is StaffOfLightning)
+                {
+                    item = "Посох \"Молния\"";
+                    info = ", мощность – " + i.Power.ToString();
+                }
+                if (i is Decoction)
+                    item = "Декокт из лягушачьих лапок";
+                if (i is HpWater)
+                {
+                    item = "Бутылка с живой водой";
+                    info = ", объём – " + i.Power.ToString();
+                }
+                if (i is MpWater)
+                {
+                    item = "Бутылка с мёртвой водой";
+                    info = ", объём – " + i.Power.ToString();
+                }
+                if (i is PoisonousSpit)
+                {
+                    item = "Ядовитая слюна";
+                    info = ", мощность – " + i.Power.ToString();
+                }
+                Console.WriteLine("{0}: {1}{2}", count, item, info);
+                ++count;
+            }
+        }
+        public Artifact ChooseInventory(int i)
+        {
+            return inventory.ElementAt(i).Key;
+        }
+        public int SizeInventory()
+        {
+            return inventory.Count;
+        }
+        public string CheckGender()
+        {
+            if (Gender == Gender_all.Female)
+                return "a";
+            else
+                return "";
+        }
         protected void AddXP(Character character)
         {
             if (character.Status == Status_all.Dead)
@@ -247,7 +290,6 @@ namespace RPG
             else
                 this.XP += 10;
         }
-       
     }
 
 }

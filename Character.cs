@@ -233,34 +233,63 @@ namespace RPG
         public void OutInventory()
         {
             int count = 1;
-            string item = "Глаз василиска", info = "";
+            //string item = "Глаз василиска", info = "";
             foreach (var i in inventory.Keys)
             {
-                if (i is StaffOfLightning)
-                {
-                    item = "Посох \"Молния\"";
-                    info = ", мощность – " + i.Power.ToString();
-                }
-                if (i is Decoction)
-                    item = "Декокт из лягушачьих лапок";
-                if (i is HpWater)
-                {
-                    item = "Бутылка с живой водой";
-                    info = ", объём – " + i.Power.ToString();
-                }
-                if (i is MpWater)
-                {
-                    item = "Бутылка с мёртвой водой";
-                    info = ", объём – " + i.Power.ToString();
-                }
-                if (i is PoisonousSpit)
-                {
-                    item = "Ядовитая слюна";
-                    info = ", мощность – " + i.Power.ToString();
-                }
-                Console.WriteLine("{0}: {1}{2}", count, item, info);
+                Console.Write("{0}: ", count);
+                InventoryInfo(i);
+                //if (i is StaffOfLightning)
+                //{
+                //    item = "Посох \"Молния\"";
+                //    info = ", мощность – " + i.Power.ToString();
+                //}
+                //if (i is Decoction)
+                //    item = "Декокт из лягушачьих лапок";
+                //if (i is HpWater)
+                //{
+                //    item = "Бутылка с живой водой";
+                //    info = ", объём – " + i.Power.ToString();
+                //}
+                //if (i is MpWater)
+                //{
+                //    item = "Бутылка с мёртвой водой";
+                //    info = ", объём – " + i.Power.ToString();
+                //}
+                //if (i is PoisonousSpit)
+                //{
+                //    item = "Ядовитая слюна";
+                //    info = ", мощность – " + i.Power.ToString();
+                //}
+                //Console.WriteLine("{0}: {1}{2}", count, item, info);
                 ++count;
             }
+        }
+        public void InventoryInfo(Artifact i)
+        {
+            string item = "Глаз василиска", info = "";
+            if (i is StaffOfLightning)
+            {
+                item = "Посох \"Молния\"";
+                info = ", мощность – " + i.Power.ToString();
+            }
+            if (i is Decoction)
+                item = "Декокт из лягушачьих лапок";
+            if (i is HpWater)
+            {
+                item = "Бутылка с живой водой";
+                info = ", объём – " + i.Power.ToString();
+            }
+            if (i is MpWater)
+            {
+                item = "Бутылка с мёртвой водой";
+                info = ", объём – " + i.Power.ToString();
+            }
+            if (i is PoisonousSpit)
+            {
+                item = "Ядовитая слюна";
+                info = ", мощность – " + i.Power.ToString();
+            }
+            Console.WriteLine("{0}{1}", item, info);
         }
         public Artifact ChooseInventory(int i)
         {

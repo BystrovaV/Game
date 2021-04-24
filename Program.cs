@@ -40,6 +40,9 @@ namespace RPG
                     break;
             }
             character.GetArtifact(artifact);
+            Console.WriteLine(character.Name + " обнаружил{0} артефакт!", character.CheckGender());////////////
+            character.InventoryInfo(artifact);
+            Console.WriteLine();
         }
 
         static Spell ChooseSpell(int n)// выбор заклинания
@@ -116,12 +119,12 @@ namespace RPG
                     Random rnd = new Random();
                     bool yes = rnd.Next(2) == 1;
                     if (!yes)
-                        Console.WriteLine("Вы не нашли артефакта");
+                        Console.WriteLine(hero.Name + " не обнаружил{0} артефакт!", hero.CheckGender());/////////////
                     else
                     {
                         int art = rnd.Next(0, 5);
                         Art(art, hero);
-                        Console.WriteLine(hero.Name + " обнаружил{0} артефакт!", hero.CheckGender());
+                        //Console.WriteLine(hero.Name + " обнаружил{0} артефакт!", hero.CheckGender());
                     }
                     break;
                 //!!!!!!!!!
@@ -134,11 +137,11 @@ namespace RPG
                     int N_throw;
                     hero.OutInventory();
                     Console.WriteLine("Какой артефакт вы хотите выбросить? Введите номер ячейки инвентаря:");
-                    while (!Int32.TryParse(Console.ReadLine(), out N_throw) | N_throw < 0 | N_throw >= hero.SizeInventory())
+                    while (!Int32.TryParse(Console.ReadLine(), out N_throw) | N_throw < 1 | N_throw > hero.SizeInventory())//////////
                     {
                         Console.WriteLine("Вы неправильно ввели номер артефакта. Повторите ввод еще раз: ");
                     }
-                    hero.ThrowArtifact(hero.ChooseInventory(N_throw));
+                    hero.ThrowArtifact(hero.ChooseInventory(N_throw-1));////////////
                     Console.WriteLine(hero.Name + " выбросил{0} артефакт!", hero.CheckGender());
                     break;
                 //!!!!!!!!
@@ -152,7 +155,7 @@ namespace RPG
                     int N_art;
                     hero.OutInventory();
                     Console.WriteLine("Какой артефакт вы хотите передать? Введите номер ячейки инвентаря:");
-                    while (!Int32.TryParse(Console.ReadLine(), out N_art) | N_art < 0 | N_art >= hero.SizeInventory())//не точно
+                    while (!Int32.TryParse(Console.ReadLine(), out N_art) | N_art < 1 | N_art > hero.SizeInventory())///////////
                     {
                         Console.WriteLine("Вы неправильно ввели номер артефакта. Повторите ввод еще раз: ");
                     }
@@ -164,10 +167,11 @@ namespace RPG
                         Console.WriteLine("Введенного вами имя не существует. Повторите ввод еще раз: ");
                         s = Console.ReadLine();
                     }
-                    hero.GiveArtifact(hero.ChooseInventory(N_art), GetPerson(s));
+                    hero.GiveArtifact(hero.ChooseInventory(N_art-1), GetPerson(s));///////////////
                     Console.WriteLine("{0} передал{1} артефакт {2}!", hero.Name, hero.CheckGender(), GetPerson(s).Name);
                     break;
                 //!!!!!!!!
+                ////Сбилась нумерация, начинается с 0, а выводиться с 1
                 case 4:
                     if (hero.SizeInventory() == 0)
                     {
@@ -176,11 +180,11 @@ namespace RPG
                     }
                     hero.OutInventory();
                     Console.WriteLine("Какой артефакт вы хотите использовать? Введите номер ячейки инвентаря:");
-                    while (!Int32.TryParse(Console.ReadLine(), out N_art) | N_art < 0 | N_art >= hero.SizeInventory())//не точно
+                    while (!Int32.TryParse(Console.ReadLine(), out N_art) | N_art < 1 | N_art > hero.SizeInventory())/////////
                     {
                         Console.WriteLine("Вы неправильно ввели номер артефакта. Повторите ввод еще раз: ");
                     }
-                    Artifact artifact = hero.ChooseInventory(N_art);
+                    Artifact artifact = hero.ChooseInventory(N_art-1);///////
                     OutNames();
                     Console.WriteLine("Введите имя игрока, на котором хотите использовать артефакт: ");
                     s = Console.ReadLine();
@@ -195,7 +199,7 @@ namespace RPG
                     }
                     else
                         hero.UseArtifact(artifact, GetPerson(s));
-                    Console.WriteLine(hero.Name + "использовал{0} артефакт!", hero.CheckGender());
+                    Console.WriteLine(hero.Name + " использовал{0} артефакт!", hero.CheckGender());
                     SomeoneDied(hero, GetPerson(s));
                     break;
                 case 5:

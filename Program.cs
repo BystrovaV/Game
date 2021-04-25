@@ -283,7 +283,8 @@ namespace RPG
                         }
                         try
                         {
-                        (hero as MagicCharacter).UseSpell(spell, GetPerson(s), n_power);
+                            (hero as MagicCharacter).UseSpell(spell, GetPerson(s), n_power);
+                            Console.WriteLine(hero.Name + " использовал{0} заклинание!", hero.CheckGender());
                         }
                         catch (Exception ex)
                         {
@@ -295,7 +296,8 @@ namespace RPG
                     {
                         try
                         {
-                        (hero as MagicCharacter).UseSpell(spell, GetPerson(s));
+                            (hero as MagicCharacter).UseSpell(spell, GetPerson(s));
+                            Console.WriteLine(hero.Name + " использовал{0} заклинание!", hero.CheckGender());
                         }
                         catch (Exception ex)
                         {

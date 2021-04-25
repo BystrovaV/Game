@@ -281,10 +281,28 @@ namespace RPG
                         {
                             Console.WriteLine("Вы неправильно ввели значение мощности. Повторите ввод еще раз: ");
                         }
+                        try
+                        {
                         (hero as MagicCharacter).UseSpell(spell, GetPerson(s), n_power);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            break;
+                        }
                     }
                     else
+                    {
+                        try
+                        {
                         (hero as MagicCharacter).UseSpell(spell, GetPerson(s));
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            break;
+                        }
+                    }
                     // hero.UseArtifact(artifact, GetPerson(s));
 
                     //try

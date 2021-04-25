@@ -34,20 +34,10 @@ namespace RPG
         }
         public override void Perform_a_magic_effect(Character character)
         {
-
             if (character.Status == Status_all.Ill)
             {
                 character.Status = Status_all.Healthy;
                 character.CheckHP();
-                /*double HP_percent = 100 / (character.Max_HP / character.HP);
-                if (HP_percent < 10)
-                {
-                    character.Status = Status_all.Weak;
-                }
-                if (HP_percent > 10)
-                {
-                    character.Status = Status_all.Healthy;
-                }*/
             }
             lost_mana = 20;
         }

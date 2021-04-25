@@ -11,7 +11,6 @@ namespace RPG
     {
         static IDictionary<string, Character> character;
         static int N_of_person;
-        //static string play_hero;
 
         static void Art(int art, Character character)//рандом артефакта для найти артефакт
         {
@@ -42,10 +41,9 @@ namespace RPG
             character.GetArtifact(artifact);
             Console.WriteLine(character.Name + " обнаружил{0} артефакт!", character.CheckGender());////////////
             character.InventoryInfo(artifact);
-            Console.WriteLine();
         }
 
-        static Spell ChooseSpell(int n)// выбор заклинания
+        static Spell ChooseSpell(int n)// выбор заклинания для выучить заклинание
         {
             Spell spell = new Heal();
             switch (n)
@@ -71,10 +69,10 @@ namespace RPG
             }
             return spell;
         }
-        static void OutSpells()
-        {
-            Console.WriteLine("1: \"Вылечить\"\n2: \"Противоядие\"\n3: \"Оживить\"\n4: \"Броня\"\n5: \"Отомри!\"\n6: \"Добавить здоровье\"");
-        }
+        //static void OutSpells()
+        //{
+        //    Console.WriteLine("1: \"Вылечить\"\n2: \"Противоядие\"\n3: \"Оживить\"\n4: \"Броня\"\n5: \"Отомри!\"\n6: \"Добавить здоровье\"");
+        //}
         static bool FindPerson(string name)//проверка есть ли такой перс
         {
             foreach (string n in character.Keys)
@@ -126,8 +124,9 @@ namespace RPG
                         Art(art, hero);
                         //Console.WriteLine(hero.Name + " обнаружил{0} артефакт!", hero.CheckGender());
                     }
+                    Console.WriteLine();
                     break;
-                //!!!!!!!!!
+               
                 case 2:
                     if (hero.SizeInventory() == 0)
                     {
@@ -144,7 +143,7 @@ namespace RPG
                     hero.ThrowArtifact(hero.ChooseInventory(N_throw-1));////////////
                     Console.WriteLine(hero.Name + " выбросил{0} артефакт!", hero.CheckGender());
                     break;
-                //!!!!!!!!
+                
                 case 3:
                     if (hero.SizeInventory() == 0)
                     {
@@ -170,8 +169,7 @@ namespace RPG
                     hero.GiveArtifact(hero.ChooseInventory(N_art-1), GetPerson(s));///////////////
                     Console.WriteLine("{0} передал{1} артефакт {2}!", hero.Name, hero.CheckGender(), GetPerson(s).Name);
                     break;
-                //!!!!!!!!
-                ////Сбилась нумерация, начинается с 0, а выводиться с 1
+                
                 case 4:
                     if (hero.SizeInventory() == 0)
                     {
@@ -193,18 +191,34 @@ namespace RPG
                         Console.WriteLine("Введенного вами имя не существует. Повторите ввод еще раз: ");
                         s = Console.ReadLine();
                     }
-                    if (artifact is PoisonousSpit || artifact is StaffOfLightning)
+                    if (artifact is StaffOfLightning)
                     {
-                        hero.UseArtifact(artifact, GetPerson(s), artifact.Power);
+                        int power;
+                        Console.WriteLine("Введите мощность заклинания: ");
+                        while (!Int32.TryParse(Console.ReadLine(), out power))
+                        {
+                            Console.WriteLine("Вы неправильно ввели значение мощности. Повторите ввод еще раз: ");
+                        }
+                        try
+                        {
+                            hero.UseArtifact(artifact, GetPerson(s), /*artifact.Power*/power);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            break;
+                        }
                     }
                     else
                         hero.UseArtifact(artifact, GetPerson(s));
+                    Console.WriteLine( GetPerson(s).ToString());
                     Console.WriteLine(hero.Name + " использовал{0} артефакт!", hero.CheckGender());
                     SomeoneDied(hero, GetPerson(s));
                     break;
                 case 5:
                     int N_spell;
-                    OutSpells();
+                    //OutSpells();
+                    Console.WriteLine("1: \"Вылечить\"\n2: \"Противоядие\"\n3: \"Оживить\"\n4: \"Броня\"\n5: \"Отомри!\"\n6: \"Добавить здоровье\"");
                     Console.WriteLine("Какое заклинание хотите выучить? Введите номер заклинания: ");
                     while (!Int32.TryParse(Console.ReadLine(), out N_spell) | N_spell < 1 | N_spell > 6)//не точно
                     {
@@ -218,14 +232,15 @@ namespace RPG
                     break;
                 case 6:
                     int N_fspell;
-                    OutSpells();
+                    (hero as MagicCharacter).OutSpellInv();
                     Console.WriteLine("Какое заклинание хотите забыть? Введите номер заклинания: ");
-                    while (!Int32.TryParse(Console.ReadLine(), out N_fspell) | N_fspell < 1 | N_fspell > 6)//не точно
+                    while (!Int32.TryParse(Console.ReadLine(), out N_fspell) | N_fspell < 1 | N_fspell > (hero as MagicCharacter).SizeSpells()/*6*/)/////////////
                     {
                         Console.WriteLine("Вы неправильно ввели номер заклинания. Повторите ввод еще раз: ");
                     }
-                    Spell fspell;
-                    fspell = ChooseSpell(N_fspell);
+                    Spell fspell = (hero as MagicCharacter).ChooseSpellinv(N_fspell-1);
+                    //Spell fspell;
+                    //fspell = ChooseSpell(N_fspell);
                     try
                     {
                         if (hero is MagicCharacter mag)
@@ -237,13 +252,15 @@ namespace RPG
                         Console.WriteLine(ex.Message);
                         break;
                     }
+
                     break;
                 //!!!!!!!!
                 case 7:
                     int N_Sspell, n_power;
-                    OutSpells();
+                    // OutSpells();
+                    (hero as MagicCharacter).OutSpellInv();
                     Console.WriteLine("Какое заклинание хотите произнести? Введите номер заклинания: ");
-                    while (!Int32.TryParse(Console.ReadLine(), out N_Sspell) | N_Sspell < 1 | N_Sspell > 6)//не точно
+                    while (!Int32.TryParse(Console.ReadLine(), out N_Sspell) | N_Sspell < 1 | N_Sspell > (hero as MagicCharacter).SizeSpells()/*6*/)//не точно
                     {
                         Console.WriteLine("Вы неправильно ввели номер заклинания. Повторите ввод еще раз: ");
                     }
@@ -255,22 +272,32 @@ namespace RPG
                         Console.WriteLine("Введенного вами имя не существует. Повторите ввод еще раз: ");
                         s = Console.ReadLine();
                     }
-                    Console.WriteLine("Введите мощность заклинания: ");
-                    while (!Int32.TryParse(Console.ReadLine(), out n_power))//не точно
+                    spell = (hero as MagicCharacter).ChooseSpellinv(N_Sspell - 1);
+                    
+                    if (spell is Armor || spell is Add_HP)
                     {
-                        Console.WriteLine("Вы неправильно ввели значение мощности. Повторите ввод еще раз: ");
+                        Console.WriteLine("Введите мощность заклинания: ");
+                        while (!Int32.TryParse(Console.ReadLine(), out n_power))
+                        {
+                            Console.WriteLine("Вы неправильно ввели значение мощности. Повторите ввод еще раз: ");
+                        }
+                        (hero as MagicCharacter).UseSpell(spell, GetPerson(s), n_power);
                     }
-                    try
-                    {
-                        if (hero is MagicCharacter magician)
-                            magician.UseSpell(ChooseSpell(N_Sspell), GetPerson(s), n_power);
-                        Console.WriteLine(hero.Name + " использовал{0} заклинание!", hero.CheckGender());
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                        break;
-                    }
+                    else
+                        (hero as MagicCharacter).UseSpell(spell, GetPerson(s));
+                    // hero.UseArtifact(artifact, GetPerson(s));
+
+                    //try
+                    //{
+                    //    if (hero is MagicCharacter magician)
+                    //        magician.UseSpell(magician.ChooseSpellinv(N_Sspell-1), GetPerson(s), n_power);
+                    //    Console.WriteLine(hero.Name + " использовал{0} заклинание!", hero.CheckGender());
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    Console.WriteLine(ex.Message);
+                    //    break;
+                    //}
                     SomeoneDied(hero, GetPerson(s));
                     break;
             }
@@ -346,40 +373,7 @@ namespace RPG
                     Action(p);
                 }
             }
-            /*
-            //Spell spell = new Add_HP();
-            //Console.ReadKey();
 
-            MagicCharacter mag = new MagicCharacter("Xa", Race_all.Elf, Gender_all.Female, 15);
-
-            Character character = new Character("An", Race_all.Gnome, Gender_all.Male, 15);
-            //Armor armor=new Armor();
-            //character.GetArmor();
-            character.HP = 20;
-
-            Spell heal = new Add_HP();
-            //mag.LearnSpell(heal);
-            //mag.UseSpell(heal, character, 150);
-            Artifact staff = new StaffOfLightning(170);
-            Artifact lol = new PoisonousSpit(10);
-            mag.GetArtifact(staff);
-            mag.GetArtifact(lol);
-            mag.UseArtifact(staff, character, 170);
-            //heal.Perform_a_magic_effect(character, 5);
-
-            // character.GetArmor();
-            // string s=Console.ReadLine();
-            // if (s == "1")
-            //{
-            //   character.GetArmor();
-            // }
-            //Console.ReadKey();
-            //var abc = new MagicCharacter("Xa", Race_all.Elf, Gender_all.Female, 15);
-            //abc.XP = 150;
-            Console.WriteLine(character.ToString());
-            Console.WriteLine(mag.ToString());
-            Console.ReadKey();
-            */
         }
     }
 }
@@ -399,3 +393,38 @@ namespace RPG
 //    }
 //    return s;
 //}
+
+/*
+           //Spell spell = new Add_HP();
+           //Console.ReadKey();
+
+           MagicCharacter mag = new MagicCharacter("Xa", Race_all.Elf, Gender_all.Female, 15);
+
+           Character character = new Character("An", Race_all.Gnome, Gender_all.Male, 15);
+           //Armor armor=new Armor();
+           //character.GetArmor();
+           character.HP = 20;
+
+           Spell heal = new Add_HP();
+           //mag.LearnSpell(heal);
+           //mag.UseSpell(heal, character, 150);
+           Artifact staff = new StaffOfLightning(170);
+           Artifact lol = new PoisonousSpit(10);
+           mag.GetArtifact(staff);
+           mag.GetArtifact(lol);
+           mag.UseArtifact(staff, character, 170);
+           //heal.Perform_a_magic_effect(character, 5);
+
+           // character.GetArmor();
+           // string s=Console.ReadLine();
+           // if (s == "1")
+           //{
+           //   character.GetArmor();
+           // }
+           //Console.ReadKey();
+           //var abc = new MagicCharacter("Xa", Race_all.Elf, Gender_all.Female, 15);
+           //abc.XP = 150;
+           Console.WriteLine(character.ToString());
+           Console.WriteLine(mag.ToString());
+           Console.ReadKey();
+           */

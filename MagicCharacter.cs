@@ -12,8 +12,6 @@ namespace RPG
         protected int mp;
         protected int Max_mp;
         protected Dictionary<Spell, bool> spells = new Dictionary<Spell, bool>();
-        //public List<Spells> spells = new List<Spells>;  
-        // или enum
 
         public int Max_MP
         {
@@ -32,11 +30,7 @@ namespace RPG
             get { return mp; }
             set { mp = value; if (mp < 0) mp = 0; if (mp > Max_mp) mp = Max_mp; }
         }
-        //public MagicCharacter(string _name, int _race, int _gender, int _age) : base(_name, _race, _gender, _age)
-        //{
-        //    Max_mp = 200;
-        //    mp = Max_mp;
-        //}
+
         public MagicCharacter(string _name, Race_all _race, Gender_all _gender, int _age) : base(_name, _race, _gender, _age)
         {
             Max_mp = 200;
@@ -69,12 +63,6 @@ namespace RPG
                 throw new GameException("Недостаточно маны для выполнения заклинания!");
             spell.Perform_a_magic_effect(character);
             this.MP -= spell.lost_mana;
-            //if (character.Status == Status_all.Dead)
-            //{
-            //    this.XP += 100;
-            //}
-            //else
-            //    this.XP += 10;
             AddXP(character);
         }
         public void UseSpell(Spell spell, Character character, int power)
@@ -84,12 +72,6 @@ namespace RPG
                 throw new GameException("Недостаточно маны для выполнения заклинания!");
             spell.Perform_a_magic_effect(character, power);
             this.MP -= spell.lost_mana;
-            //if (character.Status == Status_all.Dead)
-            //{
-            //    this.XP += 100;
-            //}
-            //else
-            //    this.XP += 10;
             AddXP(character);
         }
 
@@ -101,5 +83,43 @@ namespace RPG
                 return false;
             return true;
         }
+        public void OutSpellInv()/////////
+        {
+            int count = 1;
+            string item = "Добавить здоровье";
+            foreach (var i in spells.Keys)
+            {
+                if (i is Heal)
+                {
+                    item = "Вылечить";
+                }
+                if (i is Antidote)
+                    item = "Противоядие";
+                if (i is Animate)
+                {
+                    item = "Оживить";
+                }
+                if (i is Armor)
+                {
+                    item = "Броня";
+                }
+                if (i is Die_off)
+                {
+                    item = "Отомри!";
+                }
+                Console.WriteLine("{0}: {1}", count, item);
+                ++count;
+            }
+        }
+        public Spell ChooseSpellinv(int i)
+        {
+            return spells.ElementAt(i).Key;
+        }
+
+        public int SizeSpells()
+        {
+            return spells.Count();
+        }
+
     }
 }

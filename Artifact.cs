@@ -53,7 +53,7 @@ namespace RPG
         {
             if (!CanUse) throw new GameException("Can't use the artifact anymore");
             if (character == null) throw new ArgumentNullException("Character is null");
-            if (character.Status != Status_all.Dead /*& !character.isArmor*/)
+            if (character.Status != Status_all.Dead )
             {
                 if (!character.isArmor)
                 {
@@ -79,12 +79,11 @@ namespace RPG
             {
                 character.Status = Status_all.Healthy;
                 character.HP = character.HP;
-                //character.CheckHP();
                 CanUse = false;
             }
         }
     }
-    //!!!!!!!
+  
     class HpWater : Artifact
     {
         public HpWater(BottleVolume volume) : base((int)volume) { }
@@ -95,7 +94,6 @@ namespace RPG
             if (character == null) throw new ArgumentNullException("Character is null");
             if (character.Status == Status_all.Dead) throw new GameException("Can't restore health to a dead character!");
             character.HP += Power;
-            //Power -= Power;
             CanUse = false;
         }
     }
@@ -111,7 +109,6 @@ namespace RPG
             if (character is MagicCharacter magician)
             {
                 magician.MP += Power;
-               // Power -= Power;
                 CanUse = false;
             }
         }
@@ -140,19 +137,26 @@ namespace RPG
             get { return power; }
             set
             {
-                //power = 25;
                 if (power < value)
-                    throw new GameException
-                        ("Can't overuse the staff!");
+                    throw new GameException("Can't overuse the staff!");
                 power = value;
             }
         }
+        //////////////
         public override void Perform_a_magic_effect(Character character, int power)
         {
             if (!CanUse) throw new GameException("Can't use the artifact anymore");
             if (character == null) throw new ArgumentNullException("Character is null");
-            Power -= power;
-            if(!character.isArmor)
+            //Power -= power;
+            if (power > Power)
+            {
+                power = Power;
+                Power = 0;
+            }
+            else
+                Power -= power;
+
+            if (!character.isArmor)
                 character.HP = character.HP - power;
             CanUse = Power > 0;
         }

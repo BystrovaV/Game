@@ -125,7 +125,6 @@ namespace RPG
         }
         public Character(string _name, Race_all _race, Gender_all _gender, int _age)
         {
-            // Заменить(?) идентификатор
             ID = ID_next;
             ID_next += 1;
             if (String.IsNullOrEmpty(_name) || _name.Length < 1) throw new System.ArgumentException("Wtf the Name");
@@ -208,14 +207,6 @@ namespace RPG
             artifact.Perform_a_magic_effect(character);
             if (!artifact.CanUse)
                 ThrowArtifact(artifact);
-            //if (character.Status == Status_all.Dead)
-            //{
-            //    this.XP += 100;
-            //    foreach (var e in character.inventory.Keys)
-            //    {
-            //        inventory.Remove(e);
-            //    }
-            //}
             AddXP(character);
         }
         public void UseArtifact(Artifact artifact, Character character, int power)
@@ -224,10 +215,6 @@ namespace RPG
             artifact.Perform_a_magic_effect(character, power);
             if (!artifact.CanUse)
                 ThrowArtifact(artifact);
-            //if (character.Status == Status_all.Dead)
-            //{
-            //    this.XP += 100;
-            //}
             AddXP(character);
         }
         public void OutInventory()

@@ -11,7 +11,8 @@ namespace RPG
     {
         protected int mp;
         protected int Max_mp;
-        protected Dictionary<Spell, bool> spells = new Dictionary<Spell, bool>();
+        //protected Dictionary<Spell, bool> spells = new Dictionary<Spell, bool>(); //зачем здесь bool
+        protected HashSet<Spell> spells = new HashSet<Spell>();
 
         public int Max_MP
         {
@@ -44,32 +45,53 @@ namespace RPG
         }
         public void CheckSpell(Spell spell)
         {
-            if (!spells.ContainsKey(spell))
+            //if (!spells.ContainsKey(spell))
+            //    throw new NullReferenceException("The spell is not learned.");
+            if (!CheckS(spell))
                 throw new NullReferenceException("The spell is not learned.");
         }
-        public void LearnSpell(Spell spell)
+        public bool CheckS(Spell spell)//true-содержит false-нет
         {
-            spells[spell] = true;
+            foreach (var s in spells)
+            {
+                if (s.GetType() == spell.GetType())
+                    return true;
+            }
+            return false;
+        }
+        public void LearnSpell(Spell spell)///////////////////////
+        {
+            //if(spells.Contains(spell))
+            //   throw new GameException("Вы уже знаете данное заклинание");
+            if(CheckS(spell))
+                throw new GameException("Вы уже знаете данное заклинание");
+            //if(!spells.ContainsKey(spell))
+            spells.Add(spell);
         }
         public void ForgetSpell(Spell spell)
         {
             CheckSpell(spell);
             spells.Remove(spell);
+            //spells[spell] = false;
         }
-        public void UseSpell(Spell spell, Character character)
+        public void UseSpell(Spell spell, Character character)///////////////
         {
             CheckSpell(spell);
             if (this.MP < spell.min_mana)
                 throw new GameException("Недостаточно маны для выполнения заклинания!");
+            if (!ExceptionSpell(spell))
+                throw new GameException("Вы не можете произнести данное заклинание!");
             spell.Perform_a_magic_effect(character);
             this.MP -= spell.lost_mana;
             AddXP(character);
         }
-        public void UseSpell(Spell spell, Character character, int power)
+        public void UseSpell(Spell spell, Character character, int power)//////////////////
         {
             CheckSpell(spell);
             if (this.mp < spell.min_mana | !CanUseSpell(spell, power))
                 throw new GameException("Недостаточно маны для выполнения заклинания!");
+            if (!ExceptionSpell(spell))
+                throw new GameException("Вы не можете произнести данное заклинание!");
             spell.Perform_a_magic_effect(character, power);
             this.MP -= spell.lost_mana;
             AddXP(character);
@@ -83,11 +105,28 @@ namespace RPG
                 return false;
             return true;
         }
+        protected bool ExceptionSpell(Spell spell)////////////////////////
+        {
+            if((spell is Heal)&& !Talk_ability)
+                return false;
+            if ((spell is Antidote) && !Talk_ability && !Move_ability)
+                return false;
+            if ((spell is Animate) && !Talk_ability)
+                return false;
+            if ((spell is Armor) && !Talk_ability && !Move_ability)
+                return false;
+            if ((spell is Die_off) && !Talk_ability)
+                return false;
+            if ((spell is Add_HP) && !Talk_ability)
+                return false;
+            return true;
+
+        }
         public void OutSpellInv()/////////
         {
             int count = 1;
             string item = "Добавить здоровье";
-            foreach (var i in spells.Keys)
+            foreach (var i in spells/*.Keys*/)
             {
                 if (i is Heal)
                 {
@@ -113,7 +152,7 @@ namespace RPG
         }
         public Spell ChooseSpellinv(int i)
         {
-            return spells.ElementAt(i).Key;
+            return spells.ElementAt(i)/*.Key*/;
         }
 
         public int SizeSpells()

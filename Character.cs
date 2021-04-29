@@ -177,24 +177,65 @@ namespace RPG
                 $"Возможность двигаться: {move_ans}\nРаса: {Race}\nПол: {Gender}\nВозраст: {Age}\nЗдоровье: {HP}\n" +
                 $"Максимальное здоровье: {Max_HP}\nОпыт: {XP}";
         }
-        public void ArtifactCheck(Artifact artifact)
+        public bool ArtifactEqual(Artifact artifact, Artifact artifact_in_inv)//равенство артефактов
         {
-            if (!inventory.ContainsKey(artifact))
+            bool equalpower = true;
+            if (!(artifact is BasiliskEye) & !(artifact is Decoction) & (artifact.Power != artifact_in_inv.Power))
+                equalpower = false;
+            if ((artifact_in_inv.GetType() == artifact.GetType()) & equalpower)
+                return true;
+            else
+                return false;
+        }
+        public void ArtifactCheck(Artifact artifact)//проверка на наличие артефакта
+        {
+            /*if (!inventory.ContainsKey(artifact))
+                throw new NullReferenceException("The artifact is not in the inventory.");*/
+            bool code = false;
+            foreach (var i in inventory.Keys)
+            {
+                if (ArtifactEqual(artifact, i))
+                    code = true;
+            }
+            if (!code)
                 throw new NullReferenceException("The artifact is not in the inventory.");
+
         }
         public void GetArtifact(Artifact artifact)
         {
-            if (inventory.ContainsKey(artifact))
+            /*if (inventory.ContainsKey(artifact))
                 ++inventory[artifact];
             else
+                inventory.Add(artifact, 1);*/
+            bool code = false;
+            foreach (var i in inventory.Keys)
+            {
+                if (ArtifactEqual(artifact, i))
+                {
+                    ++inventory[i];
+                    code = true;
+                    break;
+                }
+            }
+            if (!code)
                 inventory.Add(artifact, 1);
         }
         public void ThrowArtifact(Artifact artifact)
         {
             ArtifactCheck(artifact);
-            --inventory[artifact];
+            /*--inventory[artifact];
             if (inventory[artifact] == 0)
-                inventory.Remove(artifact);
+                inventory.Remove(artifact);*/
+            foreach (var i in inventory.Keys)
+                if (i.GetType() == artifact.GetType())
+                {
+                    --inventory[artifact];
+                    if (inventory[artifact] == 0)
+                        inventory.Remove(artifact);
+                    else if (artifact.CanUse == false)
+                        artifact.CanUse = true;
+                    break;
+                }
         }
         public void GiveArtifact(Artifact artifact, Character character)
         {
@@ -207,6 +248,7 @@ namespace RPG
             artifact.Perform_a_magic_effect(character);
             if (!artifact.CanUse)
                 ThrowArtifact(artifact);
+            
             AddXP(character);
         }
         public void UseArtifact(Artifact artifact, Character character, int power)
@@ -217,41 +259,17 @@ namespace RPG
                 ThrowArtifact(artifact);
             AddXP(character);
         }
-        public void OutInventory()
+        public void OutInventory()//вывод инвентаря
         {
             int count = 1;
-            //string item = "Глаз василиска", info = "";
             foreach (var i in inventory.Keys)
             {
                 Console.Write("{0}: ", count);
                 InventoryInfo(i);
-                //if (i is StaffOfLightning)
-                //{
-                //    item = "Посох \"Молния\"";
-                //    info = ", мощность – " + i.Power.ToString();
-                //}
-                //if (i is Decoction)
-                //    item = "Декокт из лягушачьих лапок";
-                //if (i is HpWater)
-                //{
-                //    item = "Бутылка с живой водой";
-                //    info = ", объём – " + i.Power.ToString();
-                //}
-                //if (i is MpWater)
-                //{
-                //    item = "Бутылка с мёртвой водой";
-                //    info = ", объём – " + i.Power.ToString();
-                //}
-                //if (i is PoisonousSpit)
-                //{
-                //    item = "Ядовитая слюна";
-                //    info = ", мощность – " + i.Power.ToString();
-                //}
-                //Console.WriteLine("{0}: {1}{2}", count, item, info);
                 ++count;
             }
         }
-        public void InventoryInfo(Artifact i)
+        public void InventoryInfo(Artifact i)//информация об артефактах
         {
             string item = "Глаз василиска", info = "";
             if (i is StaffOfLightning)
@@ -282,18 +300,18 @@ namespace RPG
         {
             return inventory.ElementAt(i).Key;
         }
-        public int SizeInventory()
+        public int SizeInventory()//размер инвентаря
         {
             return inventory.Count;
         }
-        public string CheckGender()
+        public string CheckGender()//определение пола для окончания
         {
             if (Gender == Gender_all.Female)
                 return "a";
             else
                 return "";
         }
-        protected void AddXP(Character character)
+        protected void AddXP(Character character)//добавление опыта
         {
             if (character.Status == Status_all.Dead)
             {

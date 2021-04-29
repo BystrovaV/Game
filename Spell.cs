@@ -60,6 +60,8 @@ namespace RPG
         {
             if (character.Status == Status_all.Poisoned)
             {
+                //////////////////////////////////
+                character.Status = Status_all.Healthy;
                 character.CheckHP();
             }
             lost_mana = 30;

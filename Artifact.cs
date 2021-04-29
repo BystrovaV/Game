@@ -25,10 +25,11 @@ namespace RPG
                 power = value;
             }
         }
-        public bool CanUse
+        public bool CanUse///////////////////////
         {
             get;
-            protected set;
+            //protected set;
+            set;
         }
         public Artifact(int _power)
         {
@@ -79,8 +80,8 @@ namespace RPG
             {
                 character.Status = Status_all.Healthy;
                 character.HP = character.HP;
-                CanUse = false;
             }
+            CanUse = false;//////////////////////
         }
     }
   
@@ -109,8 +110,8 @@ namespace RPG
             if (character is MagicCharacter magician)
             {
                 magician.MP += Power;
-                CanUse = false;
             }
+            CanUse = false;
         }
     }
 
@@ -142,12 +143,10 @@ namespace RPG
                 power = value;
             }
         }
-        //////////////
         public override void Perform_a_magic_effect(Character character, int power)
         {
             if (!CanUse) throw new GameException("Can't use the artifact anymore");
             if (character == null) throw new ArgumentNullException("Character is null");
-            //Power -= power;
             if (power > Power)
             {
                 power = Power;

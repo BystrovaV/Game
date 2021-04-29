@@ -59,7 +59,7 @@ namespace RPG
             }
             return false;
         }
-        public void LearnSpell(Spell spell)///////////////////////
+        public void LearnSpell(Spell spell)
         {
             //if(spells.Contains(spell))
             //   throw new GameException("Вы уже знаете данное заклинание");
@@ -72,9 +72,8 @@ namespace RPG
         {
             CheckSpell(spell);
             spells.Remove(spell);
-            //spells[spell] = false;
         }
-        public void UseSpell(Spell spell, Character character)///////////////
+        public void UseSpell(Spell spell, Character character)
         {
             CheckSpell(spell);
             if (this.MP < spell.min_mana)
@@ -85,7 +84,7 @@ namespace RPG
             this.MP -= spell.lost_mana;
             AddXP(character);
         }
-        public void UseSpell(Spell spell, Character character, int power)//////////////////
+        public void UseSpell(Spell spell, Character character, int power)
         {
             CheckSpell(spell);
             if (this.mp < spell.min_mana | !CanUseSpell(spell, power))
@@ -97,7 +96,7 @@ namespace RPG
             AddXP(character);
         }
 
-        protected bool CanUseSpell(Spell spell, int power)
+        protected bool CanUseSpell(Spell spell, int power)//Проверка маны
         {
             if ((spell is Armor) & (power * 50) > this.MP)
                 return false;
@@ -105,7 +104,7 @@ namespace RPG
                 return false;
             return true;
         }
-        protected bool ExceptionSpell(Spell spell)////////////////////////
+        protected bool ExceptionSpell(Spell spell)//Исключения к заклинаниям
         {
             if((spell is Heal)&& !Talk_ability)
                 return false;
@@ -122,11 +121,11 @@ namespace RPG
             return true;
 
         }
-        public void OutSpellInv()/////////
+        public void OutSpellInv()//Вывод заклинаний
         {
             int count = 1;
             string item = "Добавить здоровье";
-            foreach (var i in spells/*.Keys*/)
+            foreach (var i in spells)
             {
                 if (i is Heal)
                 {
@@ -152,7 +151,7 @@ namespace RPG
         }
         public Spell ChooseSpellinv(int i)
         {
-            return spells.ElementAt(i)/*.Key*/;
+            return spells.ElementAt(i);
         }
 
         public int SizeSpells()

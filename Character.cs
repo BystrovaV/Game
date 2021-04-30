@@ -189,8 +189,6 @@ namespace RPG
         }
         public void ArtifactCheck(Artifact artifact)//проверка на наличие артефакта
         {
-            /*if (!inventory.ContainsKey(artifact))
-                throw new NullReferenceException("The artifact is not in the inventory.");*/
             bool code = false;
             foreach (var i in inventory.Keys)
             {
@@ -203,10 +201,6 @@ namespace RPG
         }
         public void GetArtifact(Artifact artifact)
         {
-            /*if (inventory.ContainsKey(artifact))
-                ++inventory[artifact];
-            else
-                inventory.Add(artifact, 1);*/
             bool code = false;
             foreach (var i in inventory.Keys)
             {
@@ -223,9 +217,6 @@ namespace RPG
         public void ThrowArtifact(Artifact artifact)
         {
             ArtifactCheck(artifact);
-            /*--inventory[artifact];
-            if (inventory[artifact] == 0)
-                inventory.Remove(artifact);*/
             foreach (var i in inventory.Keys)
                 if (i.GetType() == artifact.GetType())
                 {

@@ -221,7 +221,7 @@ namespace RPG
                     }
                     else
                         hero.UseArtifact(artifact, GetPerson(s));
-                    Console.WriteLine(GetPerson(s).ToString());
+                    //Console.WriteLine(GetPerson(s).ToString());
                     Console.WriteLine(hero.Name + " использовал{0} артефакт!", hero.CheckGender());
                     CharacterCondition(hero, GetPerson(s));
                     SomeoneDied(hero, GetPerson(s));

@@ -4,8 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-//Заменить namespace
-namespace игра
+namespace RPG
 {
     public enum Status_all
     {
@@ -17,7 +16,7 @@ namespace игра
         Dead
     }
 
-    public  enum Race_all
+    public enum Race_all
     {
         Human,
         Gnome,
@@ -35,34 +34,24 @@ namespace игра
     {
         int CompareTo(Object obj);
     }
-    public class Character: IComparable
+    public class Character : IComparable
     {
-        // Это неизменяемые списки (только для чтения)
-        private readonly IReadOnlyList<string> status_all = new List<string> { "нормальное", "ослаблен", "болен", "парализован", "мёртв" };
-        private readonly IReadOnlyList<string> race_all = new List<string> { "человек", "гном", "эльф", "орк", "гоблин" };
-        private readonly IReadOnlyList<string> gender_all = new List<string> { "мужской", "женский" };
-        // ПОЧЕМУ НЕ Enum?????????  Каждый раз когда нужно будет менять статус или что либо еще придется смотреть код и смотреть соответсвие индексов к состоянию????????*
-        //вверх я не могу достучаться до них =)))))))))
-        //вверх
-        //вверх
-        //вверх
-        //
-        //
-
-        private static int ID_next= 0;
+        private static int ID_next = 0;
 
         protected int hp;
         protected int Max_hp;
         protected int age;
-        protected int xp; 
-        //set'ы для них
- 
+        protected int xp;
+        protected Status_all status;
+        public bool isArmor = false;
+        protected Dictionary<Artifact, int> inventory = new Dictionary<Artifact, int>();
+
         public int ID
         {
-            get; 
+            get;
         }
         public int Age
-        { 
+        {
             get { return age; }
             set
             {
@@ -78,9 +67,10 @@ namespace игра
             set
             {
                 if (value < 0)
-                    throw new System.ArgumentException
-                        ("HP < 0");
-                hp = value;
+                    hp = 0;
+                else if (value > Max_hp)
+                    hp = Max_HP;
+                else hp = value;
                 CheckHP();
             }
         }
@@ -92,10 +82,9 @@ namespace игра
                 if (value < 0)
                     throw new System.ArgumentException
                         ("Max hp < 0");
-                Max_hp = value
-                ;
+                Max_hp = value;
             }
-        } 
+        }
         public int XP
         {
             get { return xp; }
@@ -110,34 +99,20 @@ namespace игра
         }
         public string Name
         {
-            get { return Name; } private set {
-                if (String.IsNullOrEmpty(value) || value.Length < 1) throw new System.ArgumentException ("Wtf the Name");
-                Name = value;
-            }
+            get;
         }
-        //public string Status
-        //{
-        //    get; set;
-        //}
-        //public string Race
-        //{
-        //    get; private set;
-        //}
-        //public string Gender
-        //{
-        //    get; private set;
-        //}
         public Status_all Status
         {
-            get { return Status; } set { Status = value; if (Status == Status_all.Dead || Status == Status_all.Paralyzed) {Move_ability = Talk_ability = false; } }
+            get { return status; }
+            set { status = value; if (Status == Status_all.Dead || Status == Status_all.Paralyzed) { Move_ability = Talk_ability = false; } }
         }
         public Race_all Race
         {
-            get; private set;
+            get;
         }
         public Gender_all Gender
         {
-            get; private set;
+            get;
         }
 
         public bool Talk_ability
@@ -148,28 +123,12 @@ namespace игра
         {
             get; set;
         }
-        //public Character(string _name, int _race, int _gender, int _age)
-        //{
-        //    // Заменить(?) идентификатор
-        //    ID = ID_next;
-        //    ID_next += 1;
-        //    Name = _name;
-        //    Status = status_all[0];
-        //    Talk_ability = true;
-        //    Move_ability = true;
-        //    Race = race_all[_race];
-        //    Gender = gender_all[_gender];
-        //    Age = _age;
-        //    Max_HP = 100;
-        //    HP = Max_HP;
-        //    XP = 0;
-        //}
         public Character(string _name, Race_all _race, Gender_all _gender, int _age)
         {
-            // Заменить(?) идентификатор
             ID = ID_next;
             ID_next += 1;
-            Name = _name;
+            if (String.IsNullOrEmpty(_name) || _name.Length < 1) throw new System.ArgumentException("Wtf the Name");
+            else Name = _name;
             Status = Status_all.Healthy;
             Talk_ability = true;
             Move_ability = true;
@@ -182,32 +141,26 @@ namespace игра
         }
         public int CompareTo(object obj)
         {
-            Character otherCharacter = (Character) obj;
+            Character otherCharacter = (Character)obj;
             if (XP < otherCharacter.XP)
                 return -1;
             if (XP > otherCharacter.XP)
                 return 1;
             return 0;
         }
-        //public virtual void CheckHP()
-        //{
-        //    decimal HP_percent = 100 / (Max_HP / HP);
-        //    if (HP_percent < 10 && Status == status_all[0])
-        //        Status = status_all[1];
-        //    if (HP_percent > 10 && Status == status_all[1])
-        //        Status = status_all[0];
-        //    if (HP_percent == 0)
-        //        Status = status_all[4];
-        //}
         public virtual void CheckHP()
         {
-            decimal HP_percent = 100 / (Max_HP / HP);
-            if (HP_percent < 10 && Status == Status_all.Healthy)
-                Status = Status_all.Weak;
-            if (HP_percent > 10 && Status == Status_all.Weak)
-                Status = Status_all.Healthy;
-            if (HP_percent == 0)
+            if (HP == 0)
                 Status = Status_all.Dead;
+            else
+            {
+                decimal HP_percent = 100 / (Max_HP / HP);
+                if (HP_percent < 10 && Status == Status_all.Healthy)
+                    Status = Status_all.Weak;
+                if (HP_percent > 10 && Status == Status_all.Weak)
+                    Status = Status_all.Healthy;
+            }
+
         }
         public override string ToString()
         {
@@ -224,7 +177,144 @@ namespace игра
                 $"Возможность двигаться: {move_ans}\nРаса: {Race}\nПол: {Gender}\nВозраст: {Age}\nЗдоровье: {HP}\n" +
                 $"Максимальное здоровье: {Max_HP}\nОпыт: {XP}";
         }
-       // туса с артефактами
+        public bool ArtifactEqual(Artifact artifact, Artifact artifact_in_inv)//равенство артефактов
+        {
+            bool equalpower = true;
+            if (!(artifact is BasiliskEye) & !(artifact is Decoction) & (artifact.Power != artifact_in_inv.Power))
+                equalpower = false;
+            if ((artifact_in_inv.GetType() == artifact.GetType()) & equalpower)
+                return true;
+            else
+                return false;
+        }
+        public void ArtifactCheck(Artifact artifact)//проверка на наличие артефакта
+        {
+            bool code = false;
+            foreach (var i in inventory.Keys)
+            {
+                if (ArtifactEqual(artifact, i))
+                    code = true;
+            }
+            if (!code)
+                throw new NullReferenceException("The artifact is not in the inventory.");
+
+        }
+        public void GetArtifact(Artifact artifact)
+        {
+            bool code = false;
+            foreach (var i in inventory.Keys)
+            {
+                if (ArtifactEqual(artifact, i))
+                {
+                    ++inventory[i];
+                    code = true;
+                    break;
+                }
+            }
+            if (!code)
+                inventory.Add(artifact, 1);
+        }
+        public void ThrowArtifact(Artifact artifact)
+        {
+            ArtifactCheck(artifact);
+            foreach (var i in inventory.Keys)
+                if (i.GetType() == artifact.GetType())
+                {
+                    --inventory[artifact];
+                    if (inventory[artifact] == 0)
+                        inventory.Remove(artifact);
+                    else if (artifact.CanUse == false)
+                        artifact.CanUse = true;
+                    break;
+                }
+        }
+        public void GiveArtifact(Artifact artifact, Character character)
+        {
+            ThrowArtifact(artifact);
+            character.GetArtifact(artifact);
+        }
+        public void UseArtifact(Artifact artifact, Character character)
+        {
+            ArtifactCheck(artifact);
+            artifact.Perform_a_magic_effect(character);
+            if (!artifact.CanUse)
+                ThrowArtifact(artifact);
+            
+            AddXP(character);
+        }
+        public void UseArtifact(Artifact artifact, Character character, int power)
+        {
+            ArtifactCheck(artifact);
+            artifact.Perform_a_magic_effect(character, power);
+            if (!artifact.CanUse)
+                ThrowArtifact(artifact);
+            AddXP(character);
+        }
+        public void OutInventory()//вывод инвентаря
+        {
+            int count = 1;
+            foreach (var i in inventory.Keys)
+            {
+                Console.Write("{0}: ", count);
+                InventoryInfo(i);
+                ++count;
+            }
+        }
+        public void InventoryInfo(Artifact i)//информация об артефактах
+        {
+            string item = "Глаз василиска", info = "";
+            if (i is StaffOfLightning)
+            {
+                item = "Посох \"Молния\"";
+                info = ", мощность – " + i.Power.ToString();
+            }
+            if (i is Decoction)
+                item = "Декокт из лягушачьих лапок";
+            if (i is HpWater)
+            {
+                item = "Бутылка с живой водой";
+                info = ", объём – " + i.Power.ToString();
+            }
+            if (i is MpWater)
+            {
+                item = "Бутылка с мёртвой водой";
+                info = ", объём – " + i.Power.ToString();
+            }
+            if (i is PoisonousSpit)
+            {
+                item = "Ядовитая слюна";
+                info = ", мощность – " + i.Power.ToString();
+            }
+            Console.WriteLine("{0}{1}", item, info);
+        }
+        public Artifact ChooseInventory(int i)
+        {
+            return inventory.ElementAt(i).Key;
+        }
+        public int SizeInventory()//размер инвентаря
+        {
+            return inventory.Count;
+        }
+        public string CheckGender()//определение пола для окончания
+        {
+            if (Gender == Gender_all.Female)
+                return "a";
+            else
+                return "";
+        }
+        protected void AddXP(Character character)//добавление опыта
+        {
+            if (character.Status == Status_all.Dead)
+            {
+                this.XP += 100;
+                foreach (var e in character.inventory.Keys)
+                {
+                    inventory.Remove(e);
+                }
+            }
+            else
+                this.XP += 10;
+        }
     }
 
 }

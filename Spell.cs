@@ -23,10 +23,6 @@ namespace RPG
         public virtual void Perform_a_magic_effect(int power) { throw new NotSupportedException();}
         public virtual void Perform_a_magic_effect() { throw new NotSupportedException(); }
       
-        //public override int GetHashCode()
-        //{
-        //    return base.GetHashCode();
-        //}
     }
     //1. Вылечить
     class Heal: Spell 
@@ -60,7 +56,6 @@ namespace RPG
         {
             if (character.Status == Status_all.Poisoned)
             {
-                //////////////////////////////////
                 character.Status = Status_all.Healthy;
                 character.CheckHP();
             }

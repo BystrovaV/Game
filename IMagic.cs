@@ -9,6 +9,9 @@ namespace RPG
 {
     interface IMagic
     {
-        void Perform_a_magic_effect(Character character = null, int power = 0);
+        void Perform_a_magic_effect();
+        void Perform_a_magic_effect(Character character);
+        void Perform_a_magic_effect(int power);
+        void Perform_a_magic_effect(Character character, int power);
     }
 }

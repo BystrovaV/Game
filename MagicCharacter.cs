@@ -45,8 +45,6 @@ namespace RPG
         }
         public void CheckSpell(Spell spell)
         {
-            //if (!spells.ContainsKey(spell))
-            //    throw new NullReferenceException("The spell is not learned.");
             if (!CheckS(spell))
                 throw new NullReferenceException("The spell is not learned.");
         }
@@ -61,11 +59,8 @@ namespace RPG
         }
         public void LearnSpell(Spell spell)
         {
-            //if(spells.Contains(spell))
-            //   throw new GameException("Вы уже знаете данное заклинание");
             if(CheckS(spell))
                 throw new GameException("Вы уже знаете данное заклинание");
-            //if(!spells.ContainsKey(spell))
             spells.Add(spell);
         }
         public void ForgetSpell(Spell spell)
